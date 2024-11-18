@@ -2,6 +2,7 @@ package ch.walica.temp121124_4tp_2_sqlite.db_helper;
 
 import android.content.ContentValues;
 import android.content.Context;
+import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.widget.Toast;
@@ -42,5 +43,15 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         } else {
             Toast.makeText(context, "Notatka została dodana", Toast.LENGTH_SHORT).show();
         }
+    }
+
+    public Cursor getAllNotes() {
+        SQLiteDatabase db = this.getReadableDatabase();
+        String query = "SELECT * FROM notes";
+        Cursor cursor = null;
+        if(db != null) {
+            cursor = db.rawQuery(query, null);
+        }
+        return cursor;
     }
 }
