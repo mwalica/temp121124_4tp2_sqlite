@@ -21,4 +21,20 @@ public class Note {
         this.description = description;
         this.createDate = Instant.now().getEpochSecond();
     }
+
+    public int getId() {
+        return id;
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public long getCreateDate() {
+        return createDate;
+    }
 }
