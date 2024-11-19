@@ -6,6 +6,7 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.util.Log;
@@ -19,6 +20,7 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import java.util.ArrayList;
 import java.util.List;
 
+import ch.walica.temp121124_4tp_2_sqlite.adapter.NoteAdapter;
 import ch.walica.temp121124_4tp_2_sqlite.db_helper.DatabaseHelper;
 import ch.walica.temp121124_4tp_2_sqlite.model.Note;
 
@@ -30,7 +32,28 @@ public class HomeFragment extends Fragment {
     private FloatingActionButton floatingActionButton;
     private DatabaseHelper databaseHelper;
     private List<Note> notes = new ArrayList<>();
+    private NoteAdapter noteAdapter;
 
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        noteAdapter = new NoteAdapter(notes, (position, view) -> {
+            if(view.getId() == R.id.ivDelete) {
+                //usuwanie elementu
+                databaseHelper.deleteNote(position);
+                notes.remove(position);
+                noteAdapter.notifyItemRemoved(position);
+                noteAdapter.notifyItemRangeChanged(position, notes.size());
+            } else if(view.getId() == R.id.ivEdit) {
+                //edycja
+                UpdateFragment updateFragment = new UpdateFragment();
+                Bundle bundle = new Bundle();
+                bundle.putInt("id", notes.get(position).getId());
+                updateFragment.setArguments(bundle);
+                requireActivity().getSupportFragmentManager().beginTransaction().replace(R.id.fragmentContainerView, updateFragment).commit();
+            }
+        });
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -47,6 +70,9 @@ public class HomeFragment extends Fragment {
         tvMsg = view.findViewById(R.id.tvMsg);
         floatingActionButton = view.findViewById(R.id.floatingActionButton);
         databaseHelper = new DatabaseHelper(requireContext());
+
+        recyclerView.setLayoutManager(new LinearLayoutManager(requireContext()));
+        recyclerView.setAdapter(noteAdapter);
 
         storeNotesInList();
 
