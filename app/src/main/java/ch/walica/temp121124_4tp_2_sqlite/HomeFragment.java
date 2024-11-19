@@ -40,7 +40,7 @@ public class HomeFragment extends Fragment {
         noteAdapter = new NoteAdapter(notes, (position, view) -> {
             if(view.getId() == R.id.ivDelete) {
                 //usuwanie elementu
-                databaseHelper.deleteNote(position);
+                databaseHelper.deleteNote(notes.get(position).getId());
                 notes.remove(position);
                 noteAdapter.notifyItemRemoved(position);
                 noteAdapter.notifyItemRangeChanged(position, notes.size());
