@@ -64,4 +64,27 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             Toast.makeText(context, "Notatka usunieta", Toast.LENGTH_SHORT).show();
         }
     }
+
+    public Cursor getNoteById(int id) {
+        SQLiteDatabase db = this.getReadableDatabase();
+        String query = "SELECT * FROM notes WHERE id = ?";
+        Cursor cursor = null;
+        if(db != null) {
+            cursor = db.rawQuery(query, new String[]{String.valueOf(id)});
+        }
+        return cursor;
+    }
+
+    public void updateNote(Note note) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues cv = new ContentValues();
+        cv.put("title", note.getTitle());
+        cv.put("description", note.getDescription());
+        int result = db.update("notes", cv, "id=?", new String[]{String.valueOf(note.getId())});
+        if (result == -1) {
+            Toast.makeText(context, "Błąd edycji notatki", Toast.LENGTH_SHORT).show();
+        } else {
+            Toast.makeText(context, "Notatka zmieniona", Toast.LENGTH_SHORT).show();
+        }
+    }
 }
